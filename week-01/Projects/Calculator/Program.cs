@@ -1,20 +1,5 @@
 ﻿using System.Globalization;
 
-/*
-1. კალკულატორი
-
-User story: როგორც მომხმარებელს, მინდა შევიყვანო ორი რიცხვი და ოპერაცია (+ - * /), რომ მივიღო შედეგი.
-
-Acceptance criteria:
-
-პროგრამა სთხოვს: პირველ რიცხვს, ოპერატორს, მეორე რიცხვს.
-ბეჭდავს შედეგს interpolation-ით: 12.5 / 4 = 3.125
-არასწორ input-ზე (ტექსტი, ცარიელი ხაზი) არ იქცევა crash-ად. ამბობს რა არის არასწორი და თავიდან ეკითხება.
-შედეგის მერე კითხულობს: „კიდევ? (y/n)“.
-გამოიყენე switch ოპერატორისთვის და TryParse რიცხვებისთვის, არა Parse.
-
-string.IsNullOrWhiteSpace(input)
-*/
 
 string? firstNumberInput;
 string? operatorInput = "";
