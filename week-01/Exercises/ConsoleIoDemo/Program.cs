@@ -1,6 +1,5 @@
 ﻿decimal balance = 500m;
 
-
 Console.WriteLine("1. Balance");
 Console.WriteLine("2. Deposit");
 Console.WriteLine("3. Withdraw");
