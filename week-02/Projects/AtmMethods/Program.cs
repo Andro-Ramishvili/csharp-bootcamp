@@ -1,10 +1,7 @@
 ﻿using System.Globalization;
-CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
-
-NumberStyles styles = NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint;
 
 decimal balance = 1000m;
-const decimal MaxDepositAmount = 10_000m;
+const decimal MaxTransactionAmount = 10_000m;
 bool isOpened = true;
 string? option;
 Console.WriteLine("Welcome to the ATM!");
@@ -26,37 +23,13 @@ do
             while (true)
             {
                 Console.Write("Enter amount to deposit or enter 'cancel' to go back: ");
-                string input;
-                input = (Console.ReadLine() ?? "").Trim();
+                string input = (Console.ReadLine() ?? "").Trim();
                 if (IsCancel(input)) break;
-                if (!decimal.TryParse(input, styles, CultureInfo.InvariantCulture, out decimal amount))
+                if(!TryReadAmount(input, out decimal amount))
                 {
-                    Console.WriteLine("Invalid amount.");
-
-                    continue; // Continue the loop to prompt for deposit amount again
-
-                }
-
-                if (amount <= 0)
-                {
-                    Console.WriteLine("Amount must be positive.");
-
-                    continue; // Continue the loop to prompt for deposit amount again
-
-                }
-
-                if(!HasValidPrecision(amount))
-                {
-                    Console.WriteLine("Amount can have at most 2 decimal places.");
+                    Console.WriteLine($"Invalid amount. Enter 0.01–{MaxTransactionAmount}.");
                     continue;
                 }
-
-                if (amount > MaxDepositAmount)
-                {
-                    Console.WriteLine($"Maximum deposit amount is: {MaxDepositAmount:F2} GEL.");
-                    continue;
-                }
-
 
                 balance = Deposit(balance, amount);
                 Console.Write($"Deposited {amount:F2} GEL. ");
@@ -72,27 +45,12 @@ do
             while (true)
             {
                 Console.Write("Enter amount to withdraw or enter 'cancel' to go back: ");
-                string input;
-                input = (Console.ReadLine() ?? "").Trim();
+                string input = (Console.ReadLine() ?? "").Trim();
 
                 if (IsCancel(input)) break;
-
-
-                if (!decimal.TryParse(input, styles, CultureInfo.InvariantCulture, out decimal amount))
+                if(!TryReadAmount(input, out decimal amount))
                 {
-                    Console.WriteLine("Invalid amount.");
-                    continue;
-                }
-
-                if (amount <= 0)
-                {
-                    Console.WriteLine("Amount must be positive.");
-                    continue;
-                }
-
-                if(!HasValidPrecision(amount))
-                {
-                    Console.WriteLine("Amount can have at most 2 decimal places.");
+                    Console.WriteLine($"Invalid amount. Enter 0.01–{MaxTransactionAmount}.");
                     continue;
                 }
 
@@ -156,3 +114,44 @@ static decimal Withdraw(decimal balance, decimal amount)
 static bool IsCancel(string input) => input.ToLower() == "cancel";
 
 static bool HasValidPrecision(decimal amount) => amount == Math.Round(amount, 2);
+
+
+//TryReadAmount method from week 2
+
+static bool TryReadAmount(string? input, out decimal amount)
+{
+    NumberStyles styles = NumberStyles.AllowDecimalPoint | NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite;
+    if (!decimal.TryParse(input, styles, CultureInfo.InvariantCulture, out amount))
+    {
+        amount = 0m;
+        return false;
+    }
+    if (amount <= 0)
+    {
+        amount = 0m;
+        return false;
+    }
+    if (!HasValidPrecision(amount))
+    {
+        amount = 0m;
+        return false;
+    }
+    if (amount > MaxTransactionAmount)
+    {
+        amount = 0m;
+        return false;
+    }
+
+    return true;
+
+}
+
+// Test IO
+static void RunChecks(string?[] cases)
+{
+foreach (string? c in cases)
+{
+    bool ok = TryReadAmount(c, out decimal a);
+    Console.WriteLine($"[{c ?? "null"}] -> {ok}, {a}");
+}
+}
